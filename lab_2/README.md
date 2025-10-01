@@ -149,5 +149,122 @@ int main(void) {
 ![result 2](./img/task2.png) 
 ---
 
+## Задача 3 - вычисление комплексной экспоненты
+
+### Постановка задачи
+Используя структуру для представления комплексного числа, вычислите комплексную экспоненту `e^z` для числа `z ∈ ℂ`.  
+Формула экспоненты:  
+```
+exp(z) = 1 + z + z^2/2! + z^3/3! + … + z^n/n!
+```  
+
+### Математическая модель  
+Комплексное число имеет вид:  
+```
+z = a + bi
+```  
+где `a` — действительная часть, `b` — мнимая часть.  
+
+Основные операции:  
+- Сложение:  
+```
+(a + bi) + (c + di) = (a + c) + (b + d)i
+```  
+- Умножение:  
+```
+(a + bi)(c + di) = (ac – bd) + (ad + bc)i
+```  
+- Возведение в степень: последовательное умножение.  
+- Умножение на скаляр:  
+```
+λ(a + bi) = (λa) + (λb)i
+```  
+
+Экспонента аппроксимируется частичной суммой ряда до n-го члена.  
+
+### Список идентификаторов  
+
+| Имя переменной | Тип данных      | Описание |
+|----------------|-----------------|----------|
+| a, b           | double          | Действительная и мнимая части комплексного числа |
+| Complex        | struct          | Структура для комплексного числа |
+| add            | функция         | Сложение двух комплексных чисел |
+| multiply       | функция         | Умножение двух комплексных чисел |
+| power          | функция         | Возведение числа в степень |
+| scalar_mult    | функция         | Умножение на скаляр |
+| exp_complex    | функция         | Вычисление экспоненты |
+| print_complex  | функция         | Печать комплексного числа |
+
+### Код программы  
+
+```c
+#include <stdio.h>
+
+struct Complex {
+    double a; 
+    double b; 
+};
+
+struct Complex add(struct Complex z1, struct Complex z2) {
+    struct Complex res = {z1.a + z2.a, z1.b + z2.b};
+    return res;
+}
+
+struct Complex multiply(struct Complex z1, struct Complex z2) {
+    struct Complex res = {z1.a * z2.a - z1.b * z2.b, z1.a * z2.b + z1.b * z2.a};
+    return res;
+}
+
+struct Complex scalar_mult(struct Complex z, double k) {
+    struct Complex res = {z.a * k, z.b * k};
+    return res;
+}
+
+struct Complex power(struct Complex z, int n) {
+    struct Complex res = {1.0, 0.0};
+    for (int i = 0; i < n; i++) {
+        res = multiply(res, z);
+    }
+    return res;
+}
+
+struct Complex exp_complex(struct Complex z, int terms) {
+    struct Complex sum = {1.0, 0.0}; 
+    for (int n = 1; n <= terms; n++) {
+        struct Complex term = power(z, n);
+
+        double fact = 1.0;
+        for (int i = 1; i <= n; i++) fact *= i;
+
+        term = scalar_mult(term, 1.0 / fact);
+        sum = add(sum, term);
+    }
+    return sum;
+}
+
+void print_complex(struct Complex z) {
+    if (z.b >= 0)
+        printf("%.4f + %.4fi\n", z.a, z.b);
+    else
+        printf("%.4f - %.4fi\n", z.a, -z.b);
+}
+
+int main(void) {
+    struct Complex z = {1.0, 1.0}; 
+
+    printf("Вычисление exp(z) для z = ");
+    print_complex(z);
+
+    struct Complex result = exp_complex(z, 15); 
+    printf("exp(z) ≈ ");
+    print_complex(result);
+
+    return 0;
+}
+```
+
+### Результаты работы программы  
+![result 3](./img/task3.png) 
+
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
