@@ -19,6 +19,7 @@
 | mul            | функция           | Умножает два числа |
 
 ### Код программы  
+
 ```c
 #include <stdio.h>
 
@@ -291,8 +292,6 @@ int main(void) {
 
 ### Код программы  
 
-
-
 ```c
 #include <stdio.h>
 
@@ -324,5 +323,111 @@ int main(void) {
 ![result 4](./img/task4.png) 
 ---
 
+## Задача 5 - реализация двусвязного списка
+
+### Постановка задачи 
+Реализуйте структуру и функции для создания и наполнения двусвязного списка, а также функции для его обхода и
+распечатки:
+• Прямой обход списка с выводом значений;
+• Обратный обход списка с выводом значений
+
+### Математическая модель
+- Список состоит из узлов, каждый узел содержит:  
+  - указатель на данные (`void*`),  
+  - указатель на следующий элемент,  
+  - указатель на предыдущий элемент.  
+- Для обхода вперёд используем поле `next`, для обратного — `prev`.  
+- Данные обрабатываются через преобразование типов (в примере — `int*`).  
+
+### Список идентификаторов  
+
+| Имя переменной | Тип данных    | Описание |
+|----------------|---------------|----------|
+| data           | void*         | Указатель на данные в узле |
+| next           | Node*         | Указатель на следующий узел |
+| prev           | Node*         | Указатель на предыдущий узел |
+| Node           | struct        | Узел списка |
+| create_node    | функция       | Создание нового узла |
+| append         | функция       | Добавление узла в конец списка |
+| print_forward  | функция       | Прямой обход списка |
+| print_backward | функция       | Обратный обход списка |
+
+### Код программы  
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    void *data;
+    struct Node *next;
+    struct Node *prev;
+};
+
+struct Node* create_node(void *data) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->next = NULL;
+    node->prev = NULL;
+    return node;
+}
+
+void append(struct Node **head, void *data) {
+    struct Node* new_node = create_node(data);
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+    struct Node* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = new_node;
+    new_node->prev = temp;
+}
+
+void print_forward(struct Node *head) {
+    printf("Прямой обход: ");
+    while (head != NULL) {
+        printf("%d ", *(int*)head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+void print_backward(struct Node *tail) {
+    printf("Обратный обход: ");
+    while (tail != NULL) {
+        printf("%d ", *(int*)tail->data);
+        tail = tail->prev;
+    }
+    printf("\n");
+}
+
+int main(void) {
+    struct Node* head = NULL;
+
+    for (int i = 1; i <= 5; i++) {
+        int *val = (int*)malloc(sizeof(int));
+        *val = i;
+        append(&head, val);
+    }
+
+    print_forward(head);
+
+    struct Node* tail = head;
+    while (tail->next != NULL) {
+        tail = tail->next;
+    }
+
+    print_backward(tail);
+
+    return 0;
+}
+```
+
+### Результаты работы программы  
+![result 5](./img/task5.png) 
+---
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
