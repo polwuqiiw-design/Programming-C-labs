@@ -522,5 +522,89 @@ int main(void) {
 ![result 7](./img/task7.png)
 ---
 
+## Задача 8 – ввод и вывод через enum и union  
+
+### Постановка задачи  
+Создайте программу, которая позволяет пользователю вводить и выводить информацию с различными типами данных
+через перечисления и объединения. Например, пользователь может выбрать ввод данных как числа или строки,и
+программа корректно сохранит и отобразит эти данные
+
+### Математическая модель  
+- Используется перечисление `DataType` для указания типа данных: `TYPE_INT` или `TYPE_STRING`.  
+- Объединение `Data` хранит либо целое число, либо строку.  
+- В зависимости от выбора пользователя программа читает данные нужного типа, сохраняет их в объединении и выводит на экран.  
+
+### Список идентификаторов  
+
+| Имя переменной | Тип данных | Описание |
+|----------------|------------|----------|
+| DataType       | enum       | Определяет тип данных (число или строка) |
+| Data           | union      | Хранит значение в виде числа или строки |
+| data           | Data       | Переменная объединения |
+| type           | DataType   | Текущий выбранный тип данных |
+| choice         | int        | Выбор пользователя |
+| print_data     | функция    | Вывод данных на экран |
+
+### Код программы  
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+enum DataType {
+    TYPE_INT,
+    TYPE_STRING
+};
+
+union Data {
+    int i;
+    char str[100];
+};
+
+void print_data(enum DataType type, union Data data) {
+    if (type == TYPE_INT) {
+        printf("Вы ввели число: %d\n", data.i);
+    } else if (type == TYPE_STRING) {
+        printf("Вы ввели строку: %s\n", data.str);
+    }
+}
+
+int main(void) {
+    union Data data;
+    enum DataType type;
+    int choice;
+
+    printf("Выберите тип данных:\n");
+    printf("1 - Число (int)\n");
+    printf("2 - Строка (char[])\n");
+    printf("Ваш выбор: ");
+    scanf("%d", &choice);
+    getchar(); 
+
+    if (choice == 1) {
+        type = TYPE_INT;
+        printf("Введите целое число: ");
+        scanf("%d", &data.i);
+    } else if (choice == 2) {
+        type = TYPE_STRING;
+        printf("Введите строку: ");
+        fgets(data.str, sizeof(data.str), stdin);
+        data.str[strcspn(data.str, "\n")] = '\0'; 
+    } else {
+        printf("Ошибка: неверный выбор.\n");
+        return 1;
+    }
+
+    printf("\nРезультат:\n");
+    print_data(type, data);
+
+    return 0;
+}
+```
+
+### Результаты работы программы 
+![result 8](./img/task8.png)
+---
+
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
