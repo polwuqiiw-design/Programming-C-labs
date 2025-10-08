@@ -256,5 +256,114 @@ int main(void) {
 ![result 4](./img/task4.png)
 ---
 
+# Лабораторная работа №3  
+## Тема: Объединения и перечисления  
+
+---
+
+### Задача 5 – ввод и хранение данных о студентах  
+
+#### Постановка задачи  
+Создайте структуру, в которой используется объединение для хранения различных типов данных: например, структура с отдельным полем для имени студента и отдельное поле–целое число для его возраста либо строка его возраста
+словами. Реализуйте программу для динамического ввода данных о студентах и вывода их на экран. 
+
+### Математическая модель  
+- Используется структура `Student`, содержащая:
+  - строку `name` — имя студента;  
+  - перечисление `AgeType` — тип возраста (число или строка);  
+  - объединение `Age` — хранение либо целого возраста, либо строки.  
+- Программа позволяет вводить несколько студентов, определяя способ хранения возраста.  
+
+### Список идентификаторов  
+
+| Имя переменной | Тип данных | Описание |
+|----------------|------------|----------|
+| AgeType        | enum       | Определяет тип возраста (число или строка) |
+| Age            | union      | Хранит возраст как число или как строку |
+| Student        | struct     | Структура с именем, типом возраста и объединением |
+| students       | Student*   | Динамический массив студентов |
+| n              | int        | Количество студентов |
+| print_student  | функция    | Вывод информации о студенте |
+
+### Код программы  
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+enum AgeType {
+    AGE_INT,
+    AGE_STRING
+};
+
+union Age {
+    int num;
+    char str[50];
+};
+
+struct Student {
+    char name[50];
+    enum AgeType type;
+    union Age age;
+};
+
+void print_student(struct Student s) {
+    printf("Имя: %s\n", s.name);
+    if (s.type == AGE_INT) {
+        printf("Возраст: %d\n", s.age.num);
+    } else {
+        printf("Возраст: %s\n", s.age.str);
+    }
+    printf("----------------------\n");
+}
+
+int main(void) {
+    int n;
+    printf("Введите количество студентов: ");
+    scanf("%d", &n);
+    getchar(); 
+
+    struct Student *students = malloc(n * sizeof(struct Student));
+
+    for (int i = 0; i < n; i++) {
+        printf("\nСтудент #%d\n", i + 1);
+
+        printf("Введите имя: ");
+        fgets(students[i].name, sizeof(students[i].name), stdin);
+        students[i].name[strcspn(students[i].name, "\n")] = '\0';
+
+        int choice;
+        printf("Как задать возраст? (1 - числом, 2 - словами): ");
+        scanf("%d", &choice);
+        getchar();
+
+        if (choice == 1) {
+            students[i].type = AGE_INT;
+            printf("Введите возраст (число): ");
+            scanf("%d", &students[i].age.num);
+            getchar();
+        } else {
+            students[i].type = AGE_STRING;
+            printf("Введите возраст (словами): ");
+            fgets(students[i].age.str, sizeof(students[i].age.str), stdin);
+            students[i].age.str[strcspn(students[i].age.str, "\n")] = '\0';
+        }
+    }
+
+    printf("\nСписок студентов:\n\n");
+    for (int i = 0; i < n; i++) {
+        print_student(students[i]);
+    }
+
+    free(students);
+    return 0;
+}
+```
+
+### Результаты работы программы 
+![result 5](./img/task5.png)
+---
+
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
