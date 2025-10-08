@@ -365,5 +365,96 @@ int main(void) {
 ![result 5](./img/task5.png)
 ---
 
+## Задача 6 – управление состояниями системы через enum  
+
+### Постановка задачи  
+Использовать перечисление (`enum`) для управления состояниями условной системы (например: старт, пауза, стоп).  
+Программа должна позволять изменять состояние и выводить текущее состояние на экран.  
+
+### Математическая модель  
+- Состояния системы описываются перечислением:  
+  ```
+  enum SystemState { STATE_STOP, STATE_START, STATE_PAUSE };
+  ```
+- Для хранения текущего состояния используется переменная `state`.  
+- Функция `print_state()` выводит текущее состояние в текстовом виде.  
+- Программа позволяет пользователю выбирать команды для изменения состояния.  
+
+### Список идентификаторов  
+
+| Имя переменной | Тип данных | Описание |
+|----------------|------------|----------|
+| SystemState    | enum       | Перечисление возможных состояний системы |
+| state          | SystemState | Текущее состояние системы |
+| print_state    | функция    | Печать состояния |
+| choice         | int        | Выбор пользователя |
+
+### Код программы  
+
+```c
+#include <stdio.h>
+
+enum SystemState {
+    STATE_STOP,
+    STATE_START,
+    STATE_PAUSE
+};
+
+void print_state(enum SystemState state) {
+    switch (state) {
+        case STATE_STOP:
+            printf("Состояние системы: STOP\n");
+            break;
+        case STATE_START:
+            printf("Состояние системы: START\n");
+            break;
+        case STATE_PAUSE:
+            printf("Состояние системы: PAUSE\n");
+            break;
+    }
+}
+
+int main(void) {
+    enum SystemState state = STATE_STOP;
+    int choice;
+
+    while (1) {
+        printf("\nВыберите действие:\n");
+        printf("1 - START\n");
+        printf("2 - PAUSE\n");
+        printf("3 - STOP\n");
+        printf("0 - Выйти\n");
+        printf("Ваш выбор: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                state = STATE_START;
+                break;
+            case 2:
+                state = STATE_PAUSE;
+                break;
+            case 3:
+                state = STATE_STOP;
+                break;
+            case 0:
+                printf("Выход из программы.\n");
+                return 0;
+            default:
+                printf("Некорректный выбор.\n");
+                continue;
+        }
+
+        print_state(state);
+    }
+
+    return 0;
+}
+```
+
+### Результаты работы программы  
+![result 6](./img/task6.png)
+---
+
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
