@@ -109,5 +109,62 @@ int main(void) {
 ![result 2](./img/task2.png)
 ---
 
+## Задача 3 – перечисление дней недели  
+
+### Постановка задачи  
+Создать перечислимый тип данных (enum) для семи дней недели.  
+Реализовать программу, которая выводит на экран значения каждого дня недели как целое число.  
+
+### Математическая модель  
+**Перечисления (enum)** используются для задания набора именованных констант.  
+Каждому элементу присваивается целое значение, начиная с 0 (по умолчанию) или с заданного числа.  
+
+### Список идентификаторов  
+
+| Имя переменной | Тип данных | Описание |
+|----------------|------------|----------|
+| Weekday        | enum       | Перечисление для дней недели |
+| day            | enum Weekday | Текущий день в цикле |
+| print_day      | функция    | Печать дня недели и его значения |
+
+### Код программы  
+
+```c
+#include <stdio.h>
+
+enum Weekday {
+    MONDAY = 1,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+};
+
+void print_day(enum Weekday day) {
+    switch (day) {
+        case MONDAY:    printf("Понедельник = %d\n", day); break;
+        case TUESDAY:   printf("Вторник = %d\n", day); break;
+        case WEDNESDAY: printf("Среда = %d\n", day); break;
+        case THURSDAY:  printf("Четверг = %d\n", day); break;
+        case FRIDAY:    printf("Пятница = %d\n", day); break;
+        case SATURDAY:  printf("Суббота = %d\n", day); break;
+        case SUNDAY:    printf("Воскресенье = %d\n", day); break;
+    }
+}
+
+int main(void) {
+    printf("Дни недели:\n\n");
+    for (enum Weekday day = MONDAY; day <= SUNDAY; day++) {
+        print_day(day);
+    }
+    return 0;
+}
+```
+### Результаты работы программы 
+![result 3](./img/task3.png)
+---
+
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
