@@ -97,5 +97,67 @@ int main(void) {
 ### Результаты работы программы  
 ![result 2](./img/task2.png)
 ---
+
+## Задача 3 - Копирование содержимого одного файла в другой
+
+### Постановка задачи
+Написать программу, которая копирует содержимое файла `source.txt` в новый файл `destination.txt`.  
+Программа должна открывать исходный файл в режиме чтения, а целевой — в режиме записи.  
+Содержимое копируется блоками (например, по 256 байт) с использованием функций `fread()` и `fwrite()`.
+
+### Список идентификаторов
+
+| Имя переменной | Тип данных | Описание |
+|----------------|-------------|-----------|
+| `src` | `FILE*` | Указатель на исходный файл |
+| `dest` | `FILE*` | Указатель на файл назначения |
+| `buffer` | `char[256]` | Буфер для временного хранения блока данных |
+| `bytes` | `size_t` | Количество байт, считанных из исходного файла |
+| `copyFile()` | `void` | Функция для копирования содержимого из одного файла в другой |
+| `main()` | `int` | Главная функция программы |
+
+### Код программы
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+void copyFile(const char *source, const char *destination) {
+    FILE *src = fopen(source, "rb");
+    if (src == NULL) {
+        perror("Ошибка открытия исходного файла");
+        exit(EXIT_FAILURE);
+    }
+
+    FILE *dest = fopen(destination, "wb");
+    if (dest == NULL) {
+        perror("Ошибка создания файла назначения");
+        fclose(src);
+        exit(EXIT_FAILURE);
+    }
+
+    char buffer[256];
+    size_t bytes;
+
+    while ((bytes = fread(buffer, 1, sizeof(buffer), src)) > 0) {
+        fwrite(buffer, 1, bytes, dest);
+    }
+
+    fclose(src);
+    fclose(dest);
+
+    printf("Файл успешно скопирован из %s в %s\n", source, destination);
+}
+
+int main(void) {
+    copyFile("source.txt", "destination.txt");
+    return 0;
+}
+```
+
+### Результаты работы программы  
+![result 3](./img/task3.png)
+---
+
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
