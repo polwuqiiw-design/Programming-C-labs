@@ -159,7 +159,7 @@ int main(void) {
 ![result 3](./img/task3.png)
 ---
 
-## Задача 4. Подсчёт строк, слов и символов в текстовом файле
+## Задача 4 - Подсчёт строк, слов и символов в текстовом файле
 
 ### Постановка задачи
 Разработать программу, которая открывает текстовый файл (например, `input.txt`) и подсчитывает:
@@ -241,6 +241,87 @@ int main(void) {
 
 ### Результаты работы программы  
 ![result 4](./img/task4.png)
+---
+
+## Задача 5 - Запись и чтение структур в бинарном файле
+
+### Постановка задачи
+Определить структуру (например, `struct Student` с полями `name`, `age` и `grade`).  
+Создать массив таких структур, затем записать его в бинарный файл с помощью функции `fwrite()`.  
+После этого открыть файл для чтения, восстановить массив с помощью `fread()` и вывести данные на экран.
+
+### Список идентификаторов
+
+| Имя переменной | Тип данных | Описание |
+|----------------|-------------|-----------|
+| `struct Student` | `struct` | Определение структуры студента |
+| `name` | `char[50]` | Имя студента |
+| `age` | `int` | Возраст студента |
+| `grade` | `float` | Средний балл |
+| `studentsToWrite` | `struct Student[]` | Массив структур для записи |
+| `studentsRead` | `struct Student[]` | Массив структур для чтения из файла |
+| `fp` | `FILE*` | Указатель на бинарный файл |
+| `writeStudents()` | `void` | Функция записи структур в бинарный файл |
+| `readStudents()` | `void` | Функция чтения структур из бинарного файла |
+| `main()` | `int` | Главная функция программы |
+
+### Код программы
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Student {
+    char name[50];
+    int age;
+    float grade;
+};
+
+void writeStudents(const char *filename, struct Student students[], int count) {
+    FILE *fp = fopen(filename, "wb");
+    if (fp == NULL) {
+        perror("Ошибка создания бинарного файла");
+        exit(EXIT_FAILURE);
+    }
+
+    fwrite(students, sizeof(struct Student), count, fp);
+    fclose(fp);
+}
+
+void readStudents(const char *filename, struct Student students[], int count) {
+    FILE *fp = fopen(filename, "rb");
+    if (fp == NULL) {
+        perror("Ошибка открытия бинарного файла");
+        exit(EXIT_FAILURE);
+    }
+
+    fread(students, sizeof(struct Student), count, fp);
+    fclose(fp);
+}
+
+int main(void) {
+    struct Student studentsToWrite[2] = {
+        {"Иванов", 20, 4.5f},
+        {"Петров", 22, 3.8f}
+    };
+
+    writeStudents("students.bin", studentsToWrite, 2);
+
+    struct Student studentsRead[2];
+    readStudents("students.bin", studentsRead, 2);
+
+    for (int i = 0; i < 2; i++) {
+        printf("Студент: %s, Возраст: %d, Оценка: %.2f\n",
+               studentsRead[i].name, studentsRead[i].age, studentsRead[i].grade);
+    }
+
+    return 0;
+}
+```
+
+### Результаты работы программы  
+![result 5](./img/task5.png)
 ---
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
