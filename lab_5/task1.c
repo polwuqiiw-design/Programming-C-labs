@@ -19,4 +19,3 @@ void readAndPrintFile() {
 int main(void) {
     readAndPrintFile();
     return 0;
-}
