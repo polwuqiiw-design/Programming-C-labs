@@ -323,5 +323,107 @@ int main(void) {
 ### Результаты работы программы  
 ![result 5](./img/task5.png)
 ---
+
+## Задача 6 - Произвольный доступ к файлу с использованием fseek()
+
+### Постановка задачи
+Написать программу, которая открывает бинарный файл с записями (например, структура `Student` из предыдущей задачи).  
+С помощью функции `fseek()` переместиться к определённой записи (например, с индексом 1), изменить её данные и записать изменения в файл.  
+Затем прочитать файл заново и вывести изменённую запись.
+
+### Математическая модель
+Программа демонстрирует механизм произвольного доступа к данным в бинарных файлах.  
+Используется смещение (offset), вычисляемое как:
+\[
+\text{offset} = \text{index} \times \text{sizeof(struct Student)}
+\]
+Это позволяет переходить к нужной записи без последовательного чтения предыдущих данных.
+
+### Список идентификаторов
+
+| Имя переменной | Тип данных | Описание |
+|----------------|-------------|-----------|
+| `struct Student` | `struct` | Структура, описывающая запись студента |
+| `name` | `char[50]` | Имя студента |
+| `age` | `int` | Возраст |
+| `grade` | `float` | Средний балл |
+| `fp` | `FILE*` | Указатель на бинарный файл |
+| `index` | `int` | Индекс записи, которую требуется изменить |
+| `newData` | `struct Student` | Новые данные для замены |
+| `updateStudentRecord()` | `void` | Функция обновления записи в бинарном файле |
+| `printStudentRecord()` | `void` | Функция вывода изменённой записи |
+| `main()` | `int` | Главная функция программы |
+
+### Код программы
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Student {
+    char name[50];
+    int age;
+    float grade;
+};
+
+void updateStudentRecord(const char *filename, int index, struct Student newData) {
+    FILE *fp = fopen(filename, "rb+");
+    if (fp == NULL) {
+        perror("Ошибка открытия файла");
+        exit(EXIT_FAILURE);
+    }
+
+    // Перемещаемся к нужной записи
+    fseek(fp, index * sizeof(struct Student), SEEK_SET);
+    fwrite(&newData, sizeof(struct Student), 1, fp);
+    fclose(fp);
+}
+
+void printStudentRecord(const char *filename, int index) {
+    FILE *fp = fopen(filename, "rb");
+    if (fp == NULL) {
+        perror("Ошибка открытия файла");
+        exit(EXIT_FAILURE);
+    }
+
+    struct Student s;
+    fseek(fp, index * sizeof(struct Student), SEEK_SET);
+    fread(&s, sizeof(struct Student), 1, fp);
+    fclose(fp);
+
+    printf("Обновлённая запись: %s, %d, %.2f\n", s.name, s.age, s.grade);
+}
+
+int main(void) {
+    // Исходный массив записей
+    struct Student students[2] = {
+        {"Иванов", 20, 4.5f},
+        {"Петров", 22, 3.8f}
+    };
+
+    // Записываем в файл
+    FILE *fp = fopen("students.bin", "wb");
+    if (fp == NULL) {
+        perror("Ошибка создания файла");
+        exit(EXIT_FAILURE);
+    }
+    fwrite(students, sizeof(struct Student), 2, fp);
+    fclose(fp);
+
+    // Обновляем вторую запись (индекс 1)
+    struct Student newRecord = {"Петров", 23, 4.2f};
+    updateStudentRecord("students.bin", 1, newRecord);
+
+    // Выводим обновлённую запись
+    printStudentRecord("students.bin", 1);
+
+    return 0;
+}
+```
+
+### Результаты работы программы  
+![result 6](./img/task6.png)
+---
 ### Информация о студенте  
 Полторацкая Анастасия, 1 курс, группа `1об_ПОО/25`
